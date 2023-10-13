@@ -17,6 +17,7 @@ import {
   ScrollRestoration,
   useLoaderData,
   useNavigation,
+  useSubmit,
 } from "@remix-run/react";
 import { useEffect, useRef } from "react";
 
@@ -39,6 +40,7 @@ export const action = async () => {
 export default function App() {
   const { contacts, q } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
+  const submit = useSubmit()
 
   const searchInputRef = useRef<HTMLInputElement>(null)
 
@@ -53,7 +55,7 @@ export default function App() {
     <html lang="en">
       <head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=10" />
         <Meta />
         <Links />
       </head>
@@ -61,7 +63,9 @@ export default function App() {
         <div id="sidebar">
           <h1>Remix Contacts</h1>
           <div>
-            <Form id="search-form" role="search">
+            <Form id="search-form" role="search" onChange={(event) => {
+              submit(event.currentTarget)
+            }}>
               <input
                 ref={searchInputRef}
                 id="q"
