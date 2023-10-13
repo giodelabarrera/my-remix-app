@@ -41,8 +41,13 @@ export default function App() {
   const { contacts, q } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const submit = useSubmit()
-
   const searchInputRef = useRef<HTMLInputElement>(null)
+
+  const searching =
+    navigation.location &&
+    new URLSearchParams(navigation.location.search).has(
+      "q"
+    );
 
   useEffect(() => {
     const searchField = searchInputRef.current
@@ -70,12 +75,14 @@ export default function App() {
                 ref={searchInputRef}
                 id="q"
                 aria-label="Search contacts"
+                className={searching ? "loading" : ""}
                 defaultValue={q || ""}
                 placeholder="Search"
                 type="search"
                 name="q"
               />
-              <div id="search-spinner" aria-hidden hidden={true} />
+              <div id="search-spinner" aria-hidden hidden={!searching}
+              />
             </Form>
             <Form method="post">
               <button type="submit">New</button>
@@ -119,7 +126,8 @@ export default function App() {
           </nav>
         </div>
         <div className={
-          navigation.state === "loading" ? "loading" : ""
+          navigation.state === "loading" && !searching
+            ? "loading" : ""
         } id="detail">
           <Outlet />
         </div>
